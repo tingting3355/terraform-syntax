@@ -15,9 +15,16 @@ provider "aws" {
 # 개발환경
 module "default_custome_vpc" {
   source = "./custom_vpc"
+  env    = "dev"
 }
 
 # 운영환경
 module "prd_custome_vpc" {
   source = "./custom_vpc"
+  env    = "prd"
+}
+
+resource "test_instance" "x" {
+  prd_vpc_id = module.prd_custome_vpc.vpc_id
+  dev_vpc_id = module.default_custome_vpc.vpc_id
 }
