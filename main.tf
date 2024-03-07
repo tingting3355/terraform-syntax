@@ -12,19 +12,25 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
-# 개발환경
-module "default_custome_vpc" {
-  source = "./custom_vpc"
-  env    = "dev"
+# # 개발환경
+# module "default_custome_vpc" {
+#   source = "./custom_vpc"
+#   env    = "dev"
+# }
+
+# # 운영환경
+# module "prd_custome_vpc" {
+#   source = "./custom_vpc"
+#   env    = "prd"
+# }
+
+variable "names" {
+  type    = list(string)
+  default = ["이소라", "김샛별"]
 }
 
-# 운영환경
-module "prd_custome_vpc" {
-  source = "./custom_vpc"
-  env    = "prd"
-}
-
-resource "test_instance" "x" {
-  prd_vpc_id = module.prd_custome_vpc.vpc_id
-  dev_vpc_id = module.default_custome_vpc.vpc_id
+module "personal_custom_vpc" {
+  for_each = toset(var.names)
+  source   = "./custom_vpc"
+  env      = "personal_${each.key}"
 }
